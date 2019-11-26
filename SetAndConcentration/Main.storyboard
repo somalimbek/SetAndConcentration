@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Set" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HZG-zp-oHf">
+                                <rect key="frame" x="20" y="625" width="108" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yp7-bZ-OPF">
+                                <rect key="frame" x="212" y="619" width="143" height="48"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <state key="normal" title="New Game"/>
+                                <connections>
+                                    <action selector="newGame" destination="BYZ-38-t0r" eventType="touchUpInside" id="gSy-Hw-n0s"/>
+                                </connections>
+                            </button>
+                            <view opaque="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="cvT-Wd-SXa" customClass="GameTableView" customModule="Set" customModuleProvider="target">
+                                <rect key="frame" x="20" y="0.0" width="335" height="555"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="CF8-Le-9nZ" appends="YES" id="VY4-lR-QZp"/>
+                                </connections>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uzW-Qa-IDI">
+                                <rect key="frame" x="68" y="563" width="239" height="48"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <state key="normal" title="Deal 3 More Cards"/>
+                                <connections>
+                                    <action selector="dealThreeMoreCards" destination="BYZ-38-t0r" eventType="touchUpInside" id="2Cz-KA-ber"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="HZG-zp-oHf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="8qx-uZ-12c"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="cvT-Wd-SXa" secondAttribute="trailing" constant="20" id="Nsd-J0-VuY"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yp7-bZ-OPF" secondAttribute="trailing" constant="20" id="Q6d-cS-Y3x"/>
+                            <constraint firstItem="uzW-Qa-IDI" firstAttribute="top" secondItem="cvT-Wd-SXa" secondAttribute="bottom" constant="8" symbolic="YES" id="TL8-qC-pul"/>
+                            <constraint firstItem="cvT-Wd-SXa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="WoE-sG-P0D"/>
+                            <constraint firstItem="uzW-Qa-IDI" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="gv7-ud-9o7"/>
+                            <constraint firstItem="cvT-Wd-SXa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="jJv-z0-spE"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="yp7-bZ-OPF" secondAttribute="bottom" id="jtF-A8-Wyu"/>
+                            <constraint firstItem="HZG-zp-oHf" firstAttribute="baseline" secondItem="yp7-bZ-OPF" secondAttribute="baseline" id="nHr-T4-0iF"/>
+                            <constraint firstItem="yp7-bZ-OPF" firstAttribute="top" secondItem="uzW-Qa-IDI" secondAttribute="bottom" constant="8" symbolic="YES" id="saA-sa-R7G"/>
+                            <constraint firstItem="yp7-bZ-OPF" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="HZG-zp-oHf" secondAttribute="trailing" constant="8" symbolic="YES" id="u6I-VS-Ggs"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="dealButton" destination="uzW-Qa-IDI" id="OUw-M8-5vE"/>
+                        <outlet property="gameTable" destination="cvT-Wd-SXa" id="DYp-Jx-q1a"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <rotationGestureRecognizer id="CF8-Le-9nZ">
+                    <connections>
+                        <action selector="reShuffleCardsOnTable:" destination="BYZ-38-t0r" id="h45-ix-sCf"/>
+                    </connections>
+                </rotationGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="131.8840579710145" y="138.61607142857142"/>
+        </scene>
+    </scenes>
+</document>
