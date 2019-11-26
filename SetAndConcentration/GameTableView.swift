@@ -9,8 +9,14 @@
 import UIKit
 
 class GameTableView: UIView {
+    
+    override var bounds: CGRect {
+        didSet { grid.frame = self.bounds }
+    }
 
-    lazy var grid = Grid(layout: .aspectRatio(5.0/8.0), frame: self.bounds)
+    var grid = Grid(layout: .aspectRatio(5.0/8.0)) {
+        didSet { updateCardFrames() }
+    }
     
     var cards = [CardView]()
     
@@ -24,7 +30,6 @@ class GameTableView: UIView {
         let newCountOfCardsArray = cards.count + numberOfCardsToAdd
         if newCountOfCardsArray > grid.cellCount {
             grid.cellCount = newCountOfCardsArray
-            updateCardFrames()
         }
         for _ in 1...numberOfCardsToAdd {
             if let frame = grid[cards.count] {
@@ -44,7 +49,6 @@ class GameTableView: UIView {
             cards.remove(at: index)
         }
         grid.cellCount = cards.count
-        updateCardFrames()
     }
     
     func newGame() {
@@ -76,11 +80,6 @@ class GameTableView: UIView {
                 fatalError("card not found in cards.")
             }
         }
-    }
-    
-    override func draw(_ rect: CGRect) {
-        grid.frame = bounds
-        updateCardFrames()
     }
 }
 
