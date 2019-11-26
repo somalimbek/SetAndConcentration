@@ -58,9 +58,17 @@ class GameTableView: UIView {
     
     private func updateCardFrames() {
         cards.forEach {
+            let card = $0
             if let index = cards.firstIndex(of: $0) {
                 if let frame = grid[index] {
-                    $0.frame = frame
+                    UIViewPropertyAnimator.runningPropertyAnimator(
+                        withDuration: Constants.defaultAnimationDuration,
+                        delay: Constants.defaultAnimationDelay,
+                        options: [],
+                        animations: {
+                            card.frame = frame
+                    }
+                    )
                 } else {
                     fatalError("Index out of range.")
                 }
@@ -73,5 +81,12 @@ class GameTableView: UIView {
     override func draw(_ rect: CGRect) {
         grid.frame = bounds
         updateCardFrames()
+    }
+}
+
+extension GameTableView {
+    struct Constants {
+        static let defaultAnimationDuration = 0.6
+        static let defaultAnimationDelay = 0.0
     }
 }
