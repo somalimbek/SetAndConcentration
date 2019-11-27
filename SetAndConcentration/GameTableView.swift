@@ -57,7 +57,7 @@ class GameTableView: UIView {
         }
     }
     
-    func updateCardFrames(withDuration duration: TimeInterval = Constants.defaultAnimationDuration, delay: TimeInterval = Constants.defaultAnimationDelay) {
+    func updateCardFrames(withDuration duration: TimeInterval = Constants.updateCardFramesDuration, delay: TimeInterval = Constants.updateCardFramesDelay) {
         cards.forEach {
             let card = $0
             if let index = cards.firstIndex(of: $0) {
@@ -82,7 +82,7 @@ class GameTableView: UIView {
 
 extension GameTableView {
     struct Constants {
-        static let defaultAnimationDuration = 0.3
-        static let defaultAnimationDelay = 0.0
+        static let updateCardFramesDuration = 0.3
+        static let updateCardFramesDelay = 0.0
     }
 }

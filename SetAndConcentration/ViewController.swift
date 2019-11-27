@@ -14,7 +14,12 @@ class ViewController: UIViewController {
         didSet {
             updateCardsBorders()
             dealButton.isEnabled = game.deckCount >= 3
+            score = game.score
         }
+    }
+    
+    var score = 0 {
+        didSet { scoreLabel.text = "Sets: \(self.score)" }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -23,6 +28,7 @@ class ViewController: UIViewController {
     }
     
     @IBOutlet weak var dealButton: UIButton!
+    @IBOutlet weak var scoreLabel: UILabel!
     
     @objc @IBAction func dealThreeMoreCards() {
         if game.deckCount >= 3 {

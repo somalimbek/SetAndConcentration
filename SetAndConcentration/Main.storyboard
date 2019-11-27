@@ -10,61 +10,73 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Set" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="__in_1" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HZG-zp-oHf">
-                                <rect key="frame" x="20" y="625" width="108" height="36"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yp7-bZ-OPF">
-                                <rect key="frame" x="212" y="619" width="143" height="48"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                <state key="normal" title="New Game"/>
-                                <connections>
-                                    <action selector="newGame" destination="BYZ-38-t0r" eventType="touchUpInside" id="gSy-Hw-n0s"/>
-                                </connections>
-                            </button>
-                            <view opaque="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="cvT-Wd-SXa" customClass="GameTableView" customModule="Set" customModuleProvider="target">
-                                <rect key="frame" x="20" y="0.0" width="335" height="555"/>
+                            <view opaque="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="cvT-Wd-SXa" customClass="GameTableView" customModule="__in_1" customModuleProvider="target">
+                                <rect key="frame" x="20" y="0.0" width="335" height="534.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="CF8-Le-9nZ" appends="YES" id="VY4-lR-QZp"/>
                                 </connections>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uzW-Qa-IDI">
-                                <rect key="frame" x="68" y="563" width="239" height="48"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yp7-bZ-OPF">
+                                <rect key="frame" x="116" y="619" width="143" height="48"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                <state key="normal" title="Deal 3 More Cards"/>
+                                <state key="normal" title="New Game"/>
                                 <connections>
-                                    <action selector="dealThreeMoreCards" destination="BYZ-38-t0r" eventType="touchUpInside" id="2Cz-KA-ber"/>
+                                    <action selector="newGame" destination="BYZ-38-t0r" eventType="touchUpInside" id="gSy-Hw-n0s"/>
                                 </connections>
                             </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="AF3-IE-WrJ">
+                                <rect key="frame" x="62.5" y="542.5" width="250" height="68.5"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uzW-Qa-IDI">
+                                        <rect key="frame" x="0.0" y="0.0" width="110" height="68.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="uzW-Qa-IDI" secondAttribute="height" multiplier="8:5" id="sAu-SZ-s9M"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                        <state key="normal" title="Deal"/>
+                                        <connections>
+                                            <action selector="dealThreeMoreCards" destination="BYZ-38-t0r" eventType="touchUpInside" id="2Cz-KA-ber"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sets: 27" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HZG-zp-oHf">
+                                        <rect key="frame" x="140" y="0.0" width="110" height="68.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="110" id="m8y-h2-UzJ"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="HZG-zp-oHf" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="uzW-Qa-IDI" secondAttribute="trailing" constant="8" symbolic="YES" id="hXG-j8-aCy"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="HZG-zp-oHf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="8qx-uZ-12c"/>
+                            <constraint firstItem="AF3-IE-WrJ" firstAttribute="top" secondItem="cvT-Wd-SXa" secondAttribute="bottom" constant="8" symbolic="YES" id="G8K-tD-f8E"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="cvT-Wd-SXa" secondAttribute="trailing" constant="20" id="Nsd-J0-VuY"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yp7-bZ-OPF" secondAttribute="trailing" constant="20" id="Q6d-cS-Y3x"/>
-                            <constraint firstItem="uzW-Qa-IDI" firstAttribute="top" secondItem="cvT-Wd-SXa" secondAttribute="bottom" constant="8" symbolic="YES" id="TL8-qC-pul"/>
+                            <constraint firstItem="yp7-bZ-OPF" firstAttribute="top" secondItem="AF3-IE-WrJ" secondAttribute="bottom" constant="8" symbolic="YES" id="V8L-WM-lvE"/>
+                            <constraint firstItem="yp7-bZ-OPF" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="VI7-Ni-vgz"/>
                             <constraint firstItem="cvT-Wd-SXa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="WoE-sG-P0D"/>
-                            <constraint firstItem="uzW-Qa-IDI" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="gv7-ud-9o7"/>
+                            <constraint firstItem="AF3-IE-WrJ" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="iHD-zU-gMm"/>
                             <constraint firstItem="cvT-Wd-SXa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="jJv-z0-spE"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="yp7-bZ-OPF" secondAttribute="bottom" id="jtF-A8-Wyu"/>
-                            <constraint firstItem="HZG-zp-oHf" firstAttribute="baseline" secondItem="yp7-bZ-OPF" secondAttribute="baseline" id="nHr-T4-0iF"/>
-                            <constraint firstItem="yp7-bZ-OPF" firstAttribute="top" secondItem="uzW-Qa-IDI" secondAttribute="bottom" constant="8" symbolic="YES" id="saA-sa-R7G"/>
-                            <constraint firstItem="yp7-bZ-OPF" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="HZG-zp-oHf" secondAttribute="trailing" constant="8" symbolic="YES" id="u6I-VS-Ggs"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="dealButton" destination="uzW-Qa-IDI" id="OUw-M8-5vE"/>
                         <outlet property="gameTable" destination="cvT-Wd-SXa" id="DYp-Jx-q1a"/>
+                        <outlet property="scoreLabel" destination="HZG-zp-oHf" id="p21-VU-dOY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

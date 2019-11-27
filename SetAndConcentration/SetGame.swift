@@ -14,6 +14,8 @@ struct SetGame {
     var selectedCardsIndices = [Int]()
     var matchedCardsIndices = [Int]()
     
+    var score = 0
+    
     var deckCount: Int {
         return deck.count
     }
@@ -43,6 +45,7 @@ struct SetGame {
                 selectedCardsIndices.append(index)
             }
             if areSelectedCardsAMatch {
+                score += 1
                 matchedCardsIndices.append(contentsOf: selectedCardsIndices)
             }
         } else {
