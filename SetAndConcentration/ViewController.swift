@@ -15,16 +15,20 @@ class ViewController: UIViewController {
             updateCardsBorders()
             dealButton.isEnabled = game.deckCount >= 3
             score = game.score
+            deck.isHidden = game.deckCount == 0
         }
     }
     
     var score = 0 {
         didSet { scoreLabel.text = "Sets: \(self.score)" }
     }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    
+    lazy var deck = CardView()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         newGame()
+        configureDeck()
     }
     
     @IBOutlet weak var dealButton: UIButton!
@@ -158,6 +162,14 @@ class ViewController: UIViewController {
         } else {
             fatalError("ViewController.dealThreeMoreCards(): Could not set color property of card at: \(index).")
         }
+    }
+    
+    private func configureDeck() {
+        dealButton.addSubview(deck)
+        deck.isUserInteractionEnabled = false
+        deck.layer.isOpaque = false
+        deck.frame = dealButton.frame
+        deck.isFaceUp = false
     }
 }
 

@@ -14,6 +14,7 @@ class CardView: UIView {
     var shape: Shape = .diamond { didSet {  setNeedsDisplay() } }
     var shading: Shading = .solid { didSet {  setNeedsDisplay() } }
     var color: Color = .red { didSet {  setNeedsDisplay() } }
+    var isFaceUp = true { didSet { setNeedsDisplay() } }
     
     let boundsReductionRatio: CGFloat = 9 / 10
     var originOffsetRatio: CGFloat { (1 - boundsReductionRatio) / 2 }
@@ -62,6 +63,25 @@ class CardView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
+        if isFaceUp {
+            drawFront(rect)
+        } else {
+            drawBack(rect)
+        }
+    }
+    
+    private func drawBack(_ rect: CGRect) {
+        let backgroundRect = CGRect(origin: bounds.origin, size: bounds.size)
+        let backgroudPath = UIBezierPath(roundedRect: backgroundRect, cornerRadius: cornerRadius)
+        UIColor.lightGray.setFill()
+        backgroudPath.fill()
+        
+        UIColor.black.setStroke()
+        backgroudPath.lineWidth = bounds.width / 50
+        backgroudPath.stroke()
+    }
+    
+    private func drawFront(_ rect: CGRect) {
         let backgroundRect = CGRect(origin: bounds.origin, size: bounds.size)
         let backgroudPath = UIBezierPath(roundedRect: backgroundRect, cornerRadius: cornerRadius)
         UIColor.white.setFill()
@@ -148,6 +168,7 @@ class CardView: UIView {
         case .open:
             break
         }
+
     }
 
     enum NumberOfShapes: Int {
