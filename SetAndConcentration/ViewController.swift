@@ -17,8 +17,8 @@ class ViewController: UIViewController {
         }
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         newGame()
     }
     
@@ -57,7 +57,7 @@ class ViewController: UIViewController {
         
         gameTable.newGame()
         
-        for index in game.cardsOnTable.indices {
+        for index in gameTable.cards.indices {
             updateCardViewFromModel(at: index)
         }
         

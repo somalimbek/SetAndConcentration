@@ -28,18 +28,15 @@ class GameTableView: UIView {
         assert(numberOfCardsToAdd > 0, "GameTableView.addCards(count:): count must be a positivee number")
         
         let newCountOfCardsArray = cards.count + numberOfCardsToAdd
+        
+        for _ in 1...numberOfCardsToAdd {
+            let newCard = CardView(frame: CGRect.zero)
+            newCard.layer.isOpaque = false
+            cards.append(newCard)
+            addSubview(newCard)
+        }
         if newCountOfCardsArray > grid.cellCount {
             grid.cellCount = newCountOfCardsArray
-        }
-        for _ in 1...numberOfCardsToAdd {
-            if let frame = grid[cards.count] {
-                let newCard = CardView(frame: frame)
-                newCard.layer.isOpaque = false
-                cards.append(newCard)
-                addSubview(newCard)
-            } else {
-                fatalError("Index out of range.")
-            }
         }
     }
     
@@ -60,15 +57,15 @@ class GameTableView: UIView {
         }
     }
     
-    private func updateCardFrames() {
+    func updateCardFrames(withDuration duration: TimeInterval = Constants.defaultAnimationDuration, delay: TimeInterval = Constants.defaultAnimationDelay) {
         cards.forEach {
             let card = $0
             if let index = cards.firstIndex(of: $0) {
                 if let frame = grid[index] {
                     UIViewPropertyAnimator.runningPropertyAnimator(
-                        withDuration: Constants.defaultAnimationDuration,
-                        delay: Constants.defaultAnimationDelay,
-                        options: [],
+                        withDuration: duration,
+                        delay: delay,
+                        options: [.curveEaseInOut],
                         animations: {
                             card.frame = frame
                     }
@@ -85,7 +82,7 @@ class GameTableView: UIView {
 
 extension GameTableView {
     struct Constants {
-        static let defaultAnimationDuration = 0.6
+        static let defaultAnimationDuration = 0.3
         static let defaultAnimationDelay = 0.0
     }
 }
