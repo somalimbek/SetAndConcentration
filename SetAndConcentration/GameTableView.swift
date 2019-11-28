@@ -18,21 +18,21 @@ class GameTableView: UIView {
         didSet { updateCardFrames() }
     }
     
-    var cards = [CardView]()
+    var cardViews = [CardView]()
     
-    func addCard() { addCards(count: 1) }
+    func addCardView() { addCardViews(count: 1) }
     
-    func addThreeMoreCards() { addCards(count: 3) }
+    func addThreeMoreCardViews() { addCardViews(count: 3) }
     
-    func addCards(count numberOfCardsToAdd: Int) {
-        assert(numberOfCardsToAdd > 0, "GameTableView.addCards(count:): count must be a positivee number")
+    func addCardViews(count numberOfCardViewsToAdd: Int) {
+        assert(numberOfCardViewsToAdd > 0, "GameTableView.addCards(count:): count must be a positivee number")
         
-        let newCountOfCardsArray = cards.count + numberOfCardsToAdd
+        let newCountOfCardsArray = cardViews.count + numberOfCardViewsToAdd
         
-        for _ in 1...numberOfCardsToAdd {
+        for _ in 1...numberOfCardViewsToAdd {
             let newCard = CardView(frame: CGRect.zero)
             newCard.layer.isOpaque = false
-            cards.append(newCard)
+            cardViews.append(newCard)
             addSubview(newCard)
         }
         if newCountOfCardsArray > grid.cellCount {
@@ -40,27 +40,25 @@ class GameTableView: UIView {
         }
     }
     
-    func removeCards(_ cardsToRemove: [CardView]) {
-        for card in cardsToRemove {
-            card.removeFromSuperview()
-            cards.removeAll { $0 === card }
-        }
-        grid.cellCount = cards.count
+    func removeCardView(_ cardViewToRemove: CardView) {
+        cardViewToRemove.removeFromSuperview()
+        cardViews.removeAll { $0 === cardViewToRemove }
+        grid.cellCount = cardViews.count
     }
     
     func newGame() {
-        if cards.count > 12 {
-            removeCards(Array(cards.suffix(from: 12)))
-        } else if cards.count < 12 {
-            let numberOfCardsToAdd = 12 - cards.count
-            addCards(count: numberOfCardsToAdd)
+        if cardViews.count > 12 {
+            cardViews.suffix(from: 12).forEach { removeCardView($0) }
+        } else if cardViews.count < 12 {
+            let numberOfCardsToAdd = 12 - cardViews.count
+            addCardViews(count: numberOfCardsToAdd)
         }
     }
     
     func updateCardFrames(withDuration duration: TimeInterval = Constants.updateCardFramesDuration, delay: TimeInterval = Constants.updateCardFramesDelay) {
-        cards.forEach {
+        cardViews.forEach {
             let card = $0
-            if let index = cards.firstIndex(of: $0) {
+            if let index = cardViews.firstIndex(of: $0) {
                 if let frame = grid[index] {
                     UIViewPropertyAnimator.runningPropertyAnimator(
                         withDuration: duration,

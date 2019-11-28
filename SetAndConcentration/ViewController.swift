@@ -12,7 +12,7 @@ class ViewController: UIViewController {
     
     var game = SetGame() {
         didSet {
-            updateCardsBorders()
+            updateCardViewsBorders()
             dealButton.isEnabled = game.deckCount >= 3
             score = game.score
             deck.isHidden = game.deckCount == 0
@@ -44,7 +44,7 @@ class ViewController: UIViewController {
                 }
             } else {
                 game.dealNewCards()
-                gameTable.addThreeMoreCards()
+                gameTable.addThreeMoreCardViews()
                 for index in game.cardsOnTable.indices.suffix(3) {
                     updateCardViewFromModel(at: index)
                 }
@@ -67,23 +67,23 @@ class ViewController: UIViewController {
         
         gameTable.newGame()
         
-        for index in gameTable.cards.indices {
+        for index in gameTable.cardViews.indices {
             updateCardViewFromModel(at: index)
         }
         
         addTapGestureRecognizers()
     }
     
-    @objc func touchCard(_ sender: UITapGestureRecognizer) {
+    @objc func touchCardView(_ sender: UITapGestureRecognizer) {
         switch sender.state {
         case .ended:
             if let card = sender.view as? CardView {
-                if let index = gameTable.cards.firstIndex(of: card) {
+                if let index = gameTable.cardViews.firstIndex(of: card) {
                     if game.areSelectedCardsAMatch {
                         if game.deckCount < 3 {
                             var cardsToRemove = [CardView]()
-                            game.selectedCardsIndices.forEach { cardsToRemove.append(gameTable.cards[$0]) }
-                            gameTable.removeCards(cardsToRemove)
+                            game.selectedCardsIndices.forEach { cardsToRemove.append(gameTable.cardViews[$0]) }
+                            cardsToRemove.forEach { gameTable.removeCardView($0) }
                             game.selectCard(at: index)
                         } else {
                             let matchedCardsIndices = game.matchedCardsIndices
@@ -94,10 +94,10 @@ class ViewController: UIViewController {
                         game.selectCard(at: index)
                     }
                 } else {
-                    fatalError("ViewController.touchCard(_:): could not find touched card in playingTable.cards.")
+                    fatalError("ViewController.touchCardView(_:): could not find touched card in playingTable.cards.")
                 }
             } else {
-                fatalError("Could not downcast sender.view to CardView.")
+                fatalError("ViewController.touchCardView(_:): could not downcast sender.view to CardView.")
             }
         default:
             break
@@ -108,11 +108,11 @@ class ViewController: UIViewController {
         switch sender.state {
         case .ended:
             game.reShuffleCardsOnTable()
-            if gameTable.cards.count > game.cardsOnTable.count {
-                let numberOfCardsToRemove = gameTable.cards.count - game.cardsOnTable.count
-                gameTable.removeCards(gameTable.cards.suffix(numberOfCardsToRemove))
+            if gameTable.cardViews.count > game.cardsOnTable.count {
+                let numberOfCardViewsToRemove = gameTable.cardViews.count - game.cardsOnTable.count
+                gameTable.cardViews.suffix(numberOfCardViewsToRemove).forEach { gameTable.removeCardView($0) }
             }
-            for index in gameTable.cards.indices {
+            for index in gameTable.cardViews.indices {
                 updateCardViewFromModel(at: index)
             }
         default:
@@ -121,46 +121,46 @@ class ViewController: UIViewController {
     }
     
     private func addTapGestureRecognizers() {
-        gameTable.cards.forEach {
-            let card = $0
-            if card.gestureRecognizers == nil {
-                let touch = UITapGestureRecognizer(target: self, action: #selector(touchCard(_:)))
-                card.addGestureRecognizer(touch)
+        gameTable.cardViews.forEach {
+            let cardView = $0
+            if cardView.gestureRecognizers == nil {
+                let touch = UITapGestureRecognizer(target: self, action: #selector(touchCardView(_:)))
+                cardView.addGestureRecognizer(touch)
             }
         }
     }
     
-    private func updateCardsBorders() {
-        gameTable.cards.forEach { $0.removeBorder() }
+    private func updateCardViewsBorders() {
+        gameTable.cardViews.forEach { $0.removeBorder() }
         if game.areSelectedCardsAMatch {
-            game.selectedCardsIndices.forEach { gameTable.cards[$0].addBorder(color: UIColor.green.cgColor) }
+            game.selectedCardsIndices.forEach { gameTable.cardViews[$0].addBorder(color: UIColor.green.cgColor) }
         } else {
             if game.selectedCardsIndices.count == 3 {
-                game.selectedCardsIndices.forEach { gameTable.cards[$0].addBorder(color: UIColor.red.cgColor) }
+                game.selectedCardsIndices.forEach { gameTable.cardViews[$0].addBorder(color: UIColor.red.cgColor) }
             } else {
-                game.selectedCardsIndices.forEach { gameTable.cards[$0].addBorder(color: UIColor.blue.cgColor) }
+                game.selectedCardsIndices.forEach { gameTable.cardViews[$0].addBorder(color: UIColor.blue.cgColor) }
             }
         }
     }
     
     private func updateCardViewFromModel(at index: Int) {
         if let rawValue = CardView.NumberOfShapes(rawValue: game.cardsOnTable[index].numberOfShapes.rawValue) {
-            gameTable.cards[index].numberOfShapes = rawValue
+            gameTable.cardViews[index].numberOfShapes = rawValue
         } else {
             fatalError("ViewController.dealThreeMoreCards(): could not set numberOfShapes property of card at: \(index).")
         }
         if let rawValue = CardView.Shape(rawValue: game.cardsOnTable[index].shape.rawValue) {
-            gameTable.cards[index].shape = rawValue
+            gameTable.cardViews[index].shape = rawValue
         } else {
             fatalError("ViewController.dealThreeMoreCards(): could not set shape property of card at: \(index).")
         }
         if let rawValue = CardView.Shading(rawValue: game.cardsOnTable[index].shading.rawValue) {
-            gameTable.cards[index].shading = rawValue
+            gameTable.cardViews[index].shading = rawValue
         } else {
             fatalError("ViewController.dealThreeMoreCards(): Could not set shading property of card at: \(index).")
         }
         if let rawValue = CardView.Color(rawValue: game.cardsOnTable[index].color.rawValue) {
-            gameTable.cards[index].color = rawValue
+            gameTable.cardViews[index].color = rawValue
         } else {
             fatalError("ViewController.dealThreeMoreCards(): Could not set color property of card at: \(index).")
         }
