@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class SetViewController: UIViewController {
     
     var game = SetGame() {
         didSet {
@@ -80,24 +80,31 @@ class ViewController: UIViewController {
             if let card = sender.view as? CardView {
                 if let index = gameTable.cardViews.firstIndex(of: card) {
                     if game.areSelectedCardsAMatch {
-                        if game.deckCount < 3 {
-                            var cardsToRemove = [CardView]()
-                            game.selectedCardsIndices.forEach { cardsToRemove.append(gameTable.cardViews[$0]) }
-                            cardsToRemove.forEach { gameTable.removeCardView($0) }
-                            game.selectCard(at: index)
-                        } else {
-                            let matchedCardsIndices = game.matchedCardsIndices
-                            game.selectCard(at: index)
-                            matchedCardsIndices.forEach { updateCardViewFromModel(at: $0) }
+                        let matchedCardsIndices = game.matchedCardsIndices
+                        var cardsToRemove = [CardView]()
+                        game.selectedCardsIndices.forEach { cardsToRemove.append(gameTable.cardViews[$0]) }
+                        
+                        cardsToRemove.forEach { animateDisappearanceOfCardView($0) }
+                        
+                        let timerTimeInterval = Constants.durationOfDisappearanceOfCardView + Constants.delayOfDisappearanceOfCardView
+                        Timer.scheduledTimer(withTimeInterval: timerTimeInterval, repeats: false) { timer in
+                            if self.game.deckCount < 3 {
+                                cardsToRemove.forEach { self.gameTable.removeCardView($0) }
+                                self.game.selectCard(at: index)
+                            } else {
+                                self.game.selectCard(at: index)
+                                matchedCardsIndices.forEach { self.updateCardViewFromModel(at: $0) }
+                            }
                         }
+                        
                     } else {
                         game.selectCard(at: index)
                     }
                 } else {
-                    fatalError("ViewController.touchCardView(_:): could not find touched card in playingTable.cards.")
+                    fatalError("SetViewController.touchCardView(_:): could not find touched card in playingTable.cards.")
                 }
             } else {
-                fatalError("ViewController.touchCardView(_:): could not downcast sender.view to CardView.")
+                fatalError("SetViewController.touchCardView(_:): could not downcast sender.view to CardView.")
             }
         default:
             break
@@ -147,22 +154,22 @@ class ViewController: UIViewController {
         if let rawValue = CardView.NumberOfShapes(rawValue: game.cardsOnTable[index].numberOfShapes.rawValue) {
             gameTable.cardViews[index].numberOfShapes = rawValue
         } else {
-            fatalError("ViewController.dealThreeMoreCards(): could not set numberOfShapes property of card at: \(index).")
+            fatalError("SetViewController.dealThreeMoreCards(): could not set numberOfShapes property of card at: \(index).")
         }
         if let rawValue = CardView.Shape(rawValue: game.cardsOnTable[index].shape.rawValue) {
             gameTable.cardViews[index].shape = rawValue
         } else {
-            fatalError("ViewController.dealThreeMoreCards(): could not set shape property of card at: \(index).")
+            fatalError("SetViewController.dealThreeMoreCards(): could not set shape property of card at: \(index).")
         }
         if let rawValue = CardView.Shading(rawValue: game.cardsOnTable[index].shading.rawValue) {
             gameTable.cardViews[index].shading = rawValue
         } else {
-            fatalError("ViewController.dealThreeMoreCards(): Could not set shading property of card at: \(index).")
+            fatalError("SetViewController.dealThreeMoreCards(): Could not set shading property of card at: \(index).")
         }
         if let rawValue = CardView.Color(rawValue: game.cardsOnTable[index].color.rawValue) {
             gameTable.cardViews[index].color = rawValue
         } else {
-            fatalError("ViewController.dealThreeMoreCards(): Could not set color property of card at: \(index).")
+            fatalError("SetViewController.dealThreeMoreCards(): Could not set color property of card at: \(index).")
         }
     }
     
@@ -173,5 +180,22 @@ class ViewController: UIViewController {
         deck.frame = dealButton.frame
         deck.isFaceUp = false
     }
+    
+    private func animateDisappearanceOfCardView(_ cardViewToDisappear: CardView) {
+        UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: Constants.durationOfDisappearanceOfCardView,
+            delay: Constants.delayOfDisappearanceOfCardView,
+            options: [],
+            animations: {
+                cardViewToDisappear.alpha = 0
+        }
+        )
+    }
 }
 
+extension SetViewController {
+    struct Constants {
+        static let durationOfDisappearanceOfCardView = 0.6
+        static let delayOfDisappearanceOfCardView = 0.0
+    }
+}
