@@ -40,17 +40,17 @@ class GameTableView: UIView {
         }
     }
     
-    func removeCards(indexesOfCardsToRemove indexes: Set<Int>) {
-        for index in Array(indexes.sorted().reversed()) {
-            cards[index].removeFromSuperview()
-            cards.remove(at: index)
+    func removeCards(_ cardsToRemove: [CardView]) {
+        for card in cardsToRemove {
+            card.removeFromSuperview()
+            cards.removeAll { $0 === card }
         }
         grid.cellCount = cards.count
     }
     
     func newGame() {
         if cards.count > 12 {
-            removeCards(indexesOfCardsToRemove: Set<Int>(cards.indices.suffix(from: 12)))
+            removeCards(Array(cards.suffix(from: 12)))
         } else if cards.count < 12 {
             let numberOfCardsToAdd = 12 - cards.count
             addCards(count: numberOfCardsToAdd)

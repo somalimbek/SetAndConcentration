@@ -81,7 +81,9 @@ class ViewController: UIViewController {
                 if let index = gameTable.cards.firstIndex(of: card) {
                     if game.areSelectedCardsAMatch {
                         if game.deckCount < 3 {
-                            gameTable.removeCards(indexesOfCardsToRemove: Set<Int>(game.selectedCardsIndices))
+                            var cardsToRemove = [CardView]()
+                            game.selectedCardsIndices.forEach { cardsToRemove.append(gameTable.cards[$0]) }
+                            gameTable.removeCards(cardsToRemove)
                             game.selectCard(at: index)
                         } else {
                             let matchedCardsIndices = game.matchedCardsIndices
@@ -108,7 +110,7 @@ class ViewController: UIViewController {
             game.reShuffleCardsOnTable()
             if gameTable.cards.count > game.cardsOnTable.count {
                 let numberOfCardsToRemove = gameTable.cards.count - game.cardsOnTable.count
-                gameTable.removeCards(indexesOfCardsToRemove: Set<Int>(gameTable.cards.indices.prefix(upTo: numberOfCardsToRemove)))
+                gameTable.removeCards(gameTable.cards.suffix(numberOfCardsToRemove))
             }
             for index in gameTable.cards.indices {
                 updateCardViewFromModel(at: index)
