@@ -266,7 +266,7 @@ extension SetViewController {
         static let durationOfDisappearanceOfCardView = 0.3
         static let delayOfDisappearanceOfCardView = 0.0
         
-        static let durationOfApearanceOfCardView = 5.0// durationOfDisappearanceOfCardView
+        static let durationOfApearanceOfCardView = durationOfDisappearanceOfCardView
         static let delayOfApearanceOfCardView = delayOfDisappearanceOfCardView
     }
 }
