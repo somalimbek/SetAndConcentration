@@ -35,6 +35,14 @@ class SetViewController: UIViewController {
     @IBOutlet weak var dealButton: UIButton!
     @IBOutlet weak var scoreLabel: UILabel!
     
+    @IBOutlet weak var gameTable: GameTableView! {
+        didSet {
+            let swipe = UISwipeGestureRecognizer(target: self, action: #selector(dealThreeMoreCards))
+            swipe.direction = [.down]
+            gameTable.addGestureRecognizer(swipe)
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         newGame()
@@ -58,34 +66,51 @@ class SetViewController: UIViewController {
                 game.dealNewCards()
                 gameTable.addThreeMoreCardViews()
                 
-                let cardViewsToAnimate = gameTable.cardViews.suffix(3)
-                
-                cardViewsToAnimate.forEach {
-                    updateCardViewFromModel($0)
-                    animateAppearanceOfCardView($0)
+                let timeToWait = GameTableView.Constants.durationOfUpdatingCardFrames + GameTableView.Constants.delayOfUpdatingCardFrames
+                Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { _ in
+                    let cardViewsToAnimate = self.gameTable.cardViews.suffix(3)
+                    cardViewsToAnimate.forEach {
+                        self.updateCardViewFromModel($0)
+                        self.animateAppearanceOfCardView($0)
+                    }
+                    self.addTapGestureRecognizers()
                 }
-                addTapGestureRecognizers()
             }
         }
     }
         
-    @IBOutlet weak var gameTable: GameTableView! {
-        didSet {
-            let swipe = UISwipeGestureRecognizer(target: self, action: #selector(dealThreeMoreCards))
-            swipe.direction = [.down]
-            gameTable.addGestureRecognizer(swipe)
-        }
-    }
-    
     @IBAction func newGame() {
         game = SetGame()
         for _ in 1...4 { game.dealNewCards() }
         
-        gameTable.newGame()
+        let timeToWait: TimeInterval
         
-        gameTable.cardViews.forEach { updateCardViewFromModel($0) }
+        if gameTable.cardViews.isEmpty {
+            timeToWait = 0.0
+        } else {
+            gameTable.cardViews.forEach { animateDisappearanceOfCardView($0) }
+            timeToWait = Constants.durationOfDisappearanceOfCardView + Constants.delayOfDisappearanceOfCardView
+        }
+
+        Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { _ in
+            self.gameTable.newGame()
+            self.addTapGestureRecognizers()
+            self.gameTable.cardViews.forEach {
+                self.updateCardViewFromModel($0)
+                self.animateAppearanceOfCardView($0)
+            }
+            
+
+        }
         
-        addTapGestureRecognizers()
+//        gameTable.newGame()
+        
+//        gameTable.cardViews.forEach {
+//            updateCardViewFromModel($0)
+//            animateAppearanceOfCardView($0)
+//        }
+//
+//        addTapGestureRecognizers()
     }
     
     @objc func touchCardView(_ sender: UITapGestureRecognizer) {
@@ -102,8 +127,8 @@ class SetViewController: UIViewController {
                         
                         cardViewsToAnimate.forEach { animateDisappearanceOfCardView($0) }
                         
-                        let disappearanceAnimationTimeInterval = Constants.durationOfDisappearanceOfCardView + Constants.delayOfDisappearanceOfCardView
-                        Timer.scheduledTimer(withTimeInterval: disappearanceAnimationTimeInterval, repeats: false) { _ in
+                        let timeToWait = Constants.durationOfDisappearanceOfCardView + Constants.delayOfDisappearanceOfCardView
+                        Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { _ in
                             if self.game.deckCount < 3 {
                                 cardViewsToAnimate.forEach { self.gameTable.removeCardView($0) }
                             } else {
@@ -218,14 +243,21 @@ class SetViewController: UIViewController {
     }
     
     private func animateAppearanceOfCardView(_ cardViewToAppear: CardView) {
+        let originalFrame = cardViewToAppear.frame
+        let transform = CGAffineTransform.identity.rotated(by: .pi/2)
+        cardViewToAppear.transform = transform
+        cardViewToAppear.center = stackViewForDealAndScore.convert(deck.center, to: gameTable)
+        cardViewToAppear.alpha = 1
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.durationOfApearanceOfCardView,
             delay: Constants.delayOfApearanceOfCardView,
             options: [],
             animations: {
-                cardViewToAppear.alpha = 1
+                cardViewToAppear.transform = transform.rotated(by: .pi/2)
+                cardViewToAppear.frame = originalFrame
         }
         )
+        
     }
 }
 
@@ -234,7 +266,7 @@ extension SetViewController {
         static let durationOfDisappearanceOfCardView = 0.3
         static let delayOfDisappearanceOfCardView = 0.0
         
-        static let durationOfApearanceOfCardView = durationOfDisappearanceOfCardView
+        static let durationOfApearanceOfCardView = 5.0// durationOfDisappearanceOfCardView
         static let delayOfApearanceOfCardView = delayOfDisappearanceOfCardView
     }
 }

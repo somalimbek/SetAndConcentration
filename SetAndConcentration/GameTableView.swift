@@ -15,10 +15,17 @@ class GameTableView: UIView {
     }
 
     var grid = Grid(layout: .aspectRatio(5.0/8.0)) {
-        didSet { updateCardFrames() }
+        didSet {
+            if isCreatingNewGame {
+                updateCardFrames()
+            } else {
+                updateCardFramesAnimated()
+            }
+        }
     }
     
     var cardViews = [CardView]()
+    var isCreatingNewGame = false
     
     func addCardView() { addCardViews(count: 1) }
     
@@ -29,14 +36,18 @@ class GameTableView: UIView {
         
         let newCountOfCardsArray = cardViews.count + numberOfCardViewsToAdd
         
-        for _ in 1...numberOfCardViewsToAdd {
-            let newCard = CardView(frame: CGRect.zero)
-            newCard.layer.isOpaque = false
-            cardViews.append(newCard)
-            addSubview(newCard)
-        }
         if newCountOfCardsArray > grid.cellCount {
             grid.cellCount = newCountOfCardsArray
+        }
+        
+        for _ in 1...numberOfCardViewsToAdd {
+            if let frame = grid[cardViews.count] {
+                let newCard = CardView(frame: frame)
+                newCard.layer.isOpaque = false
+                newCard.alpha = 0
+                cardViews.append(newCard)
+                addSubview(newCard)
+            }
         }
     }
     
@@ -47,15 +58,17 @@ class GameTableView: UIView {
     }
     
     func newGame() {
+        isCreatingNewGame = true
         if cardViews.count > 12 {
             cardViews.suffix(from: 12).forEach { removeCardView($0) }
         } else if cardViews.count < 12 {
             let numberOfCardsToAdd = 12 - cardViews.count
             addCardViews(count: numberOfCardsToAdd)
         }
+        isCreatingNewGame = false
     }
     
-    func updateCardFrames(withDuration duration: TimeInterval = Constants.updateCardFramesDuration, delay: TimeInterval = Constants.updateCardFramesDelay) {
+    func updateCardFramesAnimated(withDuration duration: TimeInterval = Constants.durationOfUpdatingCardFrames, delay: TimeInterval = Constants.delayOfUpdatingCardFrames) {
         cardViews.forEach {
             let card = $0
             if let index = cardViews.firstIndex(of: $0) {
@@ -76,11 +89,27 @@ class GameTableView: UIView {
             }
         }
     }
+    
+    func updateCardFrames() {
+        cardViews.forEach {
+            let card = $0
+            if let index = cardViews.firstIndex(of: $0) {
+                if let frame = grid[index] {
+                    card.frame = frame
+                } else {
+                    fatalError("Index out of range.")
+                }
+            } else {
+                fatalError("card not found in cards.")
+            }
+        }
+
+    }
 }
 
 extension GameTableView {
     struct Constants {
-        static let updateCardFramesDuration = 0.3
-        static let updateCardFramesDelay = 0.0
+        static let durationOfUpdatingCardFrames = 0.3
+        static let delayOfUpdatingCardFrames = 0.0
     }
 }
