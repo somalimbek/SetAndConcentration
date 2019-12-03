@@ -60,7 +60,7 @@ class SetViewController: UIViewController {
                 
                 cardViewsToAnimate.forEach {
                     updateCardViewFromModel($0)
-                    animateAppearanceOfCardView($0)
+                    animateDealingOutCardView($0)
                 }
             } else {
                 game.dealNewCards()
@@ -71,7 +71,7 @@ class SetViewController: UIViewController {
                     let cardViewsToAnimate = self.gameTable.cardViews.suffix(3)
                     cardViewsToAnimate.forEach {
                         self.updateCardViewFromModel($0)
-                        self.animateAppearanceOfCardView($0)
+                        self.animateDealingOutCardView($0)
                     }
                     self.addTapGestureRecognizers()
                 }
@@ -88,7 +88,7 @@ class SetViewController: UIViewController {
         if gameTable.cardViews.isEmpty {
             timeToWait = 0.0
         } else {
-            gameTable.cardViews.forEach { animateDisappearanceOfCardView($0) }
+            gameTable.cardViews.forEach { animateFlyAwayForCardView($0) }
             timeToWait = Constants.durationOfDisappearanceOfCardView + Constants.delayOfDisappearanceOfCardView
         }
 
@@ -97,7 +97,7 @@ class SetViewController: UIViewController {
             self.addTapGestureRecognizers()
             self.gameTable.cardViews.forEach {
                 self.updateCardViewFromModel($0)
-                self.animateAppearanceOfCardView($0)
+                self.animateDealingOutCardView($0)
             }
             
 
@@ -125,7 +125,7 @@ class SetViewController: UIViewController {
                         var cardViewsToAnimate = [CardView]()
                         selectedCardsIndices.forEach { cardViewsToAnimate.append(gameTable.cardViews[$0]) }
                         
-                        cardViewsToAnimate.forEach { animateDisappearanceOfCardView($0) }
+                        cardViewsToAnimate.forEach { animateFlyAwayForCardView($0) }
                         
                         let timeToWait = Constants.durationOfDisappearanceOfCardView + Constants.delayOfDisappearanceOfCardView
                         Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { _ in
@@ -231,30 +231,30 @@ class SetViewController: UIViewController {
         matchedPile.isFaceUp = false
     }
     
-    private func animateDisappearanceOfCardView(_ cardViewToDisappear: CardView) {
+    private func animateFlyAwayForCardView(_ cardViewToFlyAway: CardView) {
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.durationOfDisappearanceOfCardView,
             delay: Constants.delayOfDisappearanceOfCardView,
             options: [],
             animations: {
-                cardViewToDisappear.alpha = 0
+                cardViewToFlyAway.alpha = 0
         }
         )
     }
     
-    private func animateAppearanceOfCardView(_ cardViewToAppear: CardView) {
-        let originalFrame = cardViewToAppear.frame
+    private func animateDealingOutCardView(_ cardViewToDeal: CardView) {
+        let originalFrame = cardViewToDeal.frame
         let transform = CGAffineTransform.identity.rotated(by: .pi/2)
-        cardViewToAppear.transform = transform
-        cardViewToAppear.center = stackViewForDealAndScore.convert(deck.center, to: gameTable)
-        cardViewToAppear.alpha = 1
+        cardViewToDeal.transform = transform
+        cardViewToDeal.center = stackViewForDealAndScore.convert(deck.center, to: gameTable)
+        cardViewToDeal.alpha = 1
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.durationOfApearanceOfCardView,
             delay: Constants.delayOfApearanceOfCardView,
             options: [],
             animations: {
-                cardViewToAppear.transform = transform.rotated(by: .pi/2)
-                cardViewToAppear.frame = originalFrame
+                cardViewToDeal.transform = transform.rotated(by: .pi/2)
+                cardViewToDeal.frame = originalFrame
         }
         )
         
