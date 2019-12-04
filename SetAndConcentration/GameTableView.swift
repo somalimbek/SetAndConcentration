@@ -43,7 +43,6 @@ class GameTableView: UIView {
         for _ in 1...numberOfCardViewsToAdd {
             if let frame = grid[cardViews.count] {
                 let newCard = CardView(frame: frame)
-                newCard.layer.isOpaque = false
                 newCard.alpha = 0
                 cardViews.append(newCard)
                 addSubview(newCard)

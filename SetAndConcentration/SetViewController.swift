@@ -28,6 +28,15 @@ class SetViewController: UIViewController {
         }
     }
     
+    lazy var animator = UIDynamicAnimator(referenceView: view)
+    
+    
+    var matchedPileCenterConvertedToView: CGPoint {
+        return stackViewForDealAndScore.convert(matchedPile.center, to: view)
+    }
+    
+    lazy var cardFlyawayBehavior = CardFlyawayBehavior(in: self.animator, pointToFlyTo: self.matchedPileCenterConvertedToView)
+    
     var deck = CardView()
     var matchedPile = CardView()
     
@@ -89,7 +98,7 @@ class SetViewController: UIViewController {
             timeToWait = 0.0
         } else {
             gameTable.cardViews.forEach { animateFlyAwayForCardView($0) }
-            timeToWait = Constants.durationOfDisappearanceOfCardView + Constants.delayOfDisappearanceOfCardView
+            timeToWait = Constants.durationOfFlyingCardViewToMatchedPile + Constants.delayOfFlyingCardViewToMatchedPile
         }
 
         Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { _ in
@@ -127,7 +136,7 @@ class SetViewController: UIViewController {
                         
                         cardViewsToAnimate.forEach { animateFlyAwayForCardView($0) }
                         
-                        let timeToWait = Constants.durationOfDisappearanceOfCardView + Constants.delayOfDisappearanceOfCardView
+                        let timeToWait = Constants.durationOfFlyingCardViewToMatchedPile + Constants.delayOfFlyingCardViewToMatchedPile
                         Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { _ in
                             if self.game.deckCount < 3 {
                                 cardViewsToAnimate.forEach { self.gameTable.removeCardView($0) }
@@ -217,7 +226,6 @@ class SetViewController: UIViewController {
         stackViewForDealAndScore.addSubview(deck)
         stackViewForDealAndScore.sendSubviewToBack(deck)
         deck.isUserInteractionEnabled = false
-        deck.layer.isOpaque = false
         deck.frame = dealButton.frame
         deck.isFaceUp = false
     }
@@ -226,47 +234,50 @@ class SetViewController: UIViewController {
         stackViewForDealAndScore.addSubview(matchedPile)
         stackViewForDealAndScore.sendSubviewToBack(matchedPile)
         matchedPile.isUserInteractionEnabled = false
-        matchedPile.layer.isOpaque = false
         matchedPile.frame = scoreLabel.frame
         matchedPile.isFaceUp = false
     }
     
     private func animateFlyAwayForCardView(_ cardViewToFlyAway: CardView) {
-        UIViewPropertyAnimator.runningPropertyAnimator(
-            withDuration: Constants.durationOfDisappearanceOfCardView,
-            delay: Constants.delayOfDisappearanceOfCardView,
-            options: [],
-            animations: {
-                cardViewToFlyAway.alpha = 0
+        let tempCardView = CardView(copyFrom: cardViewToFlyAway)
+        gameTable.addSubview(tempCardView)
+        cardViewToFlyAway.alpha = 0
+        
+        cardFlyawayBehavior.addItem(tempCardView)
+        
+        Timer.scheduledTimer(withTimeInterval: Constants.durationOfFlyingCardViewToMatchedPile, repeats: false) { _ in
+            self.cardFlyawayBehavior.removeItem(tempCardView)
+            tempCardView.removeFromSuperview()
         }
-        )
     }
     
     private func animateDealingOutCardView(_ cardViewToDeal: CardView) {
         let originalFrame = cardViewToDeal.frame
-        let transform = CGAffineTransform.identity.rotated(by: .pi/2)
+        let transform = CGAffineTransform.identity.rotated(by: -(.pi/2))
         cardViewToDeal.transform = transform
-        cardViewToDeal.center = stackViewForDealAndScore.convert(deck.center, to: gameTable)
+        cardViewToDeal.frame = stackViewForDealAndScore.convert(deck.frame, to: gameTable)
         cardViewToDeal.alpha = 1
         UIViewPropertyAnimator.runningPropertyAnimator(
-            withDuration: Constants.durationOfApearanceOfCardView,
-            delay: Constants.delayOfApearanceOfCardView,
+            withDuration: Constants.durationOfDealingOutCardView,
+            delay: Constants.delayOfDealingOutCardView,
             options: [],
             animations: {
                 cardViewToDeal.transform = transform.rotated(by: .pi/2)
                 cardViewToDeal.frame = originalFrame
         }
         )
-        
     }
 }
 
 extension SetViewController {
     struct Constants {
-        static let durationOfDisappearanceOfCardView = 0.3
-        static let delayOfDisappearanceOfCardView = 0.0
-        
-        static let durationOfApearanceOfCardView = durationOfDisappearanceOfCardView
-        static let delayOfApearanceOfCardView = delayOfDisappearanceOfCardView
+        static let durationOfFlyingCardViewToMatchedPile = CardFlyawayBehavior.Constants.timeToWaitForMatchedCardsToFlyAround + 2
+        static let delayOfFlyingCardViewToMatchedPile = 0.0
+        static let timeToWaitForMatchedCardsToFlyAway = durationOfFlyingCardViewToMatchedPile + delayOfFlyingCardViewToMatchedPile
+
+        static let durationOfDealingOutCardView = 0.3
+        static let delayOfDealingOutCardView = 0.0
+ 
+        static let durationOfFlippingOverCardView = 0.3
     }
 }

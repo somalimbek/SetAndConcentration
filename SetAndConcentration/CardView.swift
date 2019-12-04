@@ -51,6 +51,25 @@ class CardView: UIView {
         }
         set { super.bounds = newValue }
     }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        isOpaque = false
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        isOpaque = false
+    }
+    
+    convenience init(copyFrom other: CardView) {
+        self.init(frame: other.frame)
+        numberOfShapes = other.numberOfShapes
+        shape = other.shape
+        shading = other.shading
+        color = other.color
+        isFaceUp = other.isFaceUp
+    }
 
     func addBorder(color: CGColor) {
         layer.borderWidth = borderWidth

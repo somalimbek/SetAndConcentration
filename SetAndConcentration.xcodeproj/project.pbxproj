@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		169CB24A2397C427008B6838 /* CardFlyawayBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169CB2492397C427008B6838 /* CardFlyawayBehavior.swift */; };
 		16C62B00238D70130009DB24 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C62AFF238D70130009DB24 /* AppDelegate.swift */; };
 		16C62B02238D70130009DB24 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C62B01238D70130009DB24 /* SceneDelegate.swift */; };
 		16C62B09238D70180009DB24 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16C62B08238D70180009DB24 /* Assets.xcassets */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		169CB2492397C427008B6838 /* CardFlyawayBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFlyawayBehavior.swift; sourceTree = "<group>"; };
 		16C62AFC238D70130009DB24 /* 2 in 1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "2 in 1.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		16C62AFF238D70130009DB24 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		16C62B01238D70130009DB24 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				16C62B19238D838C0009DB24 /* Card.swift */,
+				169CB2492397C427008B6838 /* CardFlyawayBehavior.swift */,
 				16C62B16238D838C0009DB24 /* CardView.swift */,
 				16C62B15238D838C0009DB24 /* GameTableView.swift */,
 				16C62B18238D838C0009DB24 /* Grid.swift */,
@@ -163,6 +166,7 @@
 			files = (
 				16C62B1A238D838C0009DB24 /* SetViewController.swift in Sources */,
 				16C62B00238D70130009DB24 /* AppDelegate.swift in Sources */,
+				169CB24A2397C427008B6838 /* CardFlyawayBehavior.swift in Sources */,
 				16C62B02238D70130009DB24 /* SceneDelegate.swift in Sources */,
 				16C62B1B238D838C0009DB24 /* GameTableView.swift in Sources */,
 				16C62B1D238D838C0009DB24 /* SetGame.swift in Sources */,
