@@ -19,25 +19,10 @@ class CardView: UIView {
     let boundsReductionRatio: CGFloat = 9 / 10
     var originOffsetRatio: CGFloat { (1 - boundsReductionRatio) / 2 }
     let shapeGridAspectRatio: CGFloat = 10.0 / 5.0
-    var cornerRadius: CGFloat { bounds.width / 10 }
-    var borderWidth: CGFloat { bounds.width / 20 }
+    var cornerRadius: CGFloat { CardBounds.width / 10 }
+    var borderWidth: CGFloat { CardBounds.width / 20 }
     
-    override var bounds: CGRect {
-        get {
-            let width = super.bounds.size.width * boundsReductionRatio
-            let height = super.bounds.size.height * boundsReductionRatio
-            let size = CGSize(width: width, height: height)
-            
-            let originOffsetX = width * originOffsetRatio
-            let originOffsetY = height * originOffsetRatio
-            let origin = CGPoint(x: super.bounds.origin.x + originOffsetX, y: super.bounds.origin.y + originOffsetY)
-            
-            return CGRect(origin: origin, size:  size)
-        }
-        set { super.bounds = newValue }
-    }
-    
-    var shapeGridFrame: CGRect {
+    var CardBounds: CGRect {
         get {
             let width = bounds.size.width * boundsReductionRatio
             let height = bounds.size.height * boundsReductionRatio
@@ -49,7 +34,20 @@ class CardView: UIView {
             
             return CGRect(origin: origin, size:  size)
         }
-        set { super.bounds = newValue }
+    }
+    
+    var shapeGridFrame: CGRect {
+        get {
+            let width = CardBounds.size.width * boundsReductionRatio
+            let height = CardBounds.size.height * boundsReductionRatio
+            let size = CGSize(width: width, height: height)
+            
+            let originOffsetX = width * originOffsetRatio
+            let originOffsetY = height * originOffsetRatio
+            let origin = CGPoint(x: CardBounds.origin.x + originOffsetX, y: CardBounds.origin.y + originOffsetY)
+            
+            return CGRect(origin: origin, size:  size)
+        }
     }
     
     override init(frame: CGRect) {
@@ -90,18 +88,18 @@ class CardView: UIView {
     }
     
     private func drawBack(_ rect: CGRect) {
-        let backgroundRect = CGRect(origin: bounds.origin, size: bounds.size)
+        let backgroundRect = CardBounds
         let backgroudPath = UIBezierPath(roundedRect: backgroundRect, cornerRadius: cornerRadius)
         UIColor.lightGray.setFill()
         backgroudPath.fill()
         
         UIColor.black.setStroke()
-        backgroudPath.lineWidth = bounds.width / 50
+        backgroudPath.lineWidth = CardBounds.width / 50
         backgroudPath.stroke()
     }
     
     private func drawFront(_ rect: CGRect) {
-        let backgroundRect = CGRect(origin: bounds.origin, size: bounds.size)
+        let backgroundRect = CardBounds
         let backgroudPath = UIBezierPath(roundedRect: backgroundRect, cornerRadius: cornerRadius)
         UIColor.white.setFill()
         backgroudPath.fill()
@@ -178,9 +176,9 @@ class CardView: UIView {
         case .striped:
             shapePath.addClip()
             let spaceBetweenStripes: CGFloat = shapePath.lineWidth * 1.7
-            for x in stride(from: bounds.minX, to: bounds.maxX, by: spaceBetweenStripes) {
-                shapePath.move(to: CGPoint(x: x, y: bounds.minY))
-                shapePath.addLine(to: CGPoint(x: x, y: bounds.maxY))
+            for x in stride(from: CardBounds.minX, to: CardBounds.maxX, by: spaceBetweenStripes) {
+                shapePath.move(to: CGPoint(x: x, y: CardBounds.minY))
+                shapePath.addLine(to: CGPoint(x: x, y: CardBounds.maxY))
             }
             shapePath.lineWidth /= 2
             shapePath.stroke()

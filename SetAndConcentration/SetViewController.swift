@@ -21,9 +21,10 @@ class SetViewController: UIViewController {
     
     var score = 0 {
         didSet {
-            scoreLabel.text = "Sets: \(self.score)"
-            if oldValue == 0 {
-                matchedPile.isHidden = self.score == 0
+            if score == 1 {
+                scoreLabel.text = "\(self.score) Set"
+            } else {
+                scoreLabel.text = "\(self.score) Sets"
             }
         }
     }
@@ -236,6 +237,7 @@ class SetViewController: UIViewController {
         matchedPile.isUserInteractionEnabled = false
         matchedPile.frame = scoreLabel.frame
         matchedPile.isFaceUp = false
+        matchedPile.isHidden = true
     }
     
     private func animateFlyAwayForCardView(_ cardViewToFlyAway: CardView) {
@@ -246,8 +248,23 @@ class SetViewController: UIViewController {
         cardFlyawayBehavior.addItem(tempCardView)
         
         Timer.scheduledTimer(withTimeInterval: Constants.durationOfFlyingCardViewToMatchedPile, repeats: false) { _ in
-            self.cardFlyawayBehavior.removeItem(tempCardView)
-            tempCardView.removeFromSuperview()
+            UIView.transition(
+                with: tempCardView,
+                duration: Constants.durationOfFlippingOverCardView,
+                options: [.transitionFlipFromRight],
+                animations: {
+                    tempCardView.isFaceUp = false
+                    let transform = CGAffineTransform.identity.rotated(by: -(.pi/2))
+                    tempCardView.transform = transform
+                    let matchedPileBoundsConvertedToGameTable = self.stackViewForDealAndScore.convert(self.matchedPile.bounds, to: self.gameTable)
+                    tempCardView.bounds = matchedPileBoundsConvertedToGameTable.applying(transform)
+            },
+                completion: { _ in
+                    self.cardFlyawayBehavior.removeItem(tempCardView)
+                    tempCardView.removeFromSuperview()
+                    self.matchedPile.isHidden = false
+            }
+            )
         }
     }
     
@@ -257,6 +274,7 @@ class SetViewController: UIViewController {
         cardViewToDeal.transform = transform
         cardViewToDeal.frame = stackViewForDealAndScore.convert(deck.frame, to: gameTable)
         cardViewToDeal.alpha = 1
+        cardViewToDeal.isFaceUp = false
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.durationOfDealingOutCardView,
             delay: Constants.delayOfDealingOutCardView,
@@ -264,6 +282,16 @@ class SetViewController: UIViewController {
             animations: {
                 cardViewToDeal.transform = transform.rotated(by: .pi/2)
                 cardViewToDeal.frame = originalFrame
+        },
+            completion: { _ in
+                UIView.transition(
+                    with: cardViewToDeal,
+                    duration: Constants.durationOfFlippingOverCardView,
+                    options: [.transitionFlipFromLeft],
+                    animations: {
+                        cardViewToDeal.isFaceUp = true
+                }
+                )
         }
         )
     }
@@ -271,13 +299,13 @@ class SetViewController: UIViewController {
 
 extension SetViewController {
     struct Constants {
-        static let durationOfFlyingCardViewToMatchedPile = CardFlyawayBehavior.Constants.timeToWaitForMatchedCardsToFlyAround + 2
+        static let durationOfFlyingCardViewToMatchedPile = CardFlyawayBehavior.Constants.timeToWaitForMatchedCardsToFlyAround + 1.5
         static let delayOfFlyingCardViewToMatchedPile = 0.0
         static let timeToWaitForMatchedCardsToFlyAway = durationOfFlyingCardViewToMatchedPile + delayOfFlyingCardViewToMatchedPile
 
         static let durationOfDealingOutCardView = 0.3
         static let delayOfDealingOutCardView = 0.0
  
-        static let durationOfFlippingOverCardView = 0.3
+        static let durationOfFlippingOverCardView = 0.7
     }
 }
