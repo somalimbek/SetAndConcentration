@@ -9,7 +9,7 @@
 import Foundation
 
 struct SetGame {
-    private var deck = Array(calling: { Card() }, count: 81)//.shuffled()
+    private var deck = Array(calling: { Card() }, count: 81).shuffled()
     var cardsOnTable = [Card]()
     var selectedCardsIndices = [Int]()
     var matchedCardsIndices = [Int]()

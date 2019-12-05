@@ -114,7 +114,7 @@ class SetViewController: UIViewController {
                         
                         cardViewsToAnimate.forEach { animateFlyAwayForCardView($0) }
                         
-                        let timeToWait = Constants.durationOfFlyingCardViewToMatchedPile + Constants.delayOfFlyingCardViewToMatchedPile
+                        let timeToWait = Constants.timeToWaitBeforeDealingAutomatically
                         Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { _ in
                             if self.game.deckCount < 3 {
                                 cardViewsToAnimate.forEach { self.gameTable.removeCardView($0) }
@@ -137,13 +137,14 @@ class SetViewController: UIViewController {
     @IBAction func reShuffleCardsOnTable(_ sender: UIRotationGestureRecognizer) {
         switch sender.state {
         case .ended:
-            game.reShuffleCardsOnTable()
-            if gameTable.cardViews.count > game.cardsOnTable.count {
-                let numberOfCardViewsToRemove = gameTable.cardViews.count - game.cardsOnTable.count
-                gameTable.cardViews.suffix(numberOfCardViewsToRemove).forEach { gameTable.removeCardView($0) }
-            }
-            
-            gameTable.cardViews.forEach { updateCardViewFromModel($0) }
+            print("Shuffle not implemented")
+//            game.reShuffleCardsOnTable()
+//            if gameTable.cardViews.count > game.cardsOnTable.count {
+//                let numberOfCardViewsToRemove = gameTable.cardViews.count - game.cardsOnTable.count
+//                gameTable.cardViews.suffix(numberOfCardViewsToRemove).forEach { gameTable.removeCardView($0) }
+//            }
+//
+//            gameTable.cardViews.forEach { updateCardViewFromModel($0) }
         default:
             break
         }
@@ -298,6 +299,8 @@ extension SetViewController {
  
         static let durationOfFlippingOverCardView = 0.7
         
-        static let timeToWaitBetweenDealingOutCards = 0.2
+        static let timeToWaitBetweenDealingOutCards = 0.1
+        
+        static let timeToWaitBeforeDealingAutomatically = 0.5
     }
 }
