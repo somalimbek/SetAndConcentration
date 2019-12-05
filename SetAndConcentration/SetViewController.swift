@@ -13,9 +13,9 @@ class SetViewController: UIViewController {
     var game = SetGame() {
         didSet {
             updateCardViewsBorders()
-            dealButton.isEnabled = game.deckCount >= 3
+            dealButton.isEnabled = !(game.deckCount < 3)
+            dealButton.alpha = game.deckCount<3 ? 0 : 1
             score = game.score
-            deck.isHidden = game.deckCount == 0
         }
     }
     
@@ -63,28 +63,16 @@ class SetViewController: UIViewController {
     @objc @IBAction func dealThreeMoreCards() {
         if game.deckCount >= 3 {
             if game.areSelectedCardsAMatch {
-                let selectedCardsIndices = game.selectedCardsIndices
                 var cardViewsToAnimate = [CardView]()
-                selectedCardsIndices.forEach { cardViewsToAnimate.append(gameTable.cardViews[$0]) }
+                game.selectedCardsIndices.forEach { cardViewsToAnimate.append(gameTable.cardViews[$0]) }
                 game.dealNewCards()
-                
-                cardViewsToAnimate.forEach {
-                    updateCardViewFromModel($0)
-                    animateDealingOutCardView($0)
-                }
+                animateDealingOutCardViews(cardViewsToAnimate)
             } else {
                 game.dealNewCards()
                 gameTable.addThreeMoreCardViews()
-                
-                let timeToWait = GameTableView.Constants.durationOfUpdatingCardFrames + GameTableView.Constants.delayOfUpdatingCardFrames
-                Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { _ in
-                    let cardViewsToAnimate = self.gameTable.cardViews.suffix(3)
-                    cardViewsToAnimate.forEach {
-                        self.updateCardViewFromModel($0)
-                        self.animateDealingOutCardView($0)
-                    }
-                    self.addTapGestureRecognizers()
-                }
+                let cardViewToAnimate = gameTable.cardViews.suffix(3)
+                animateDealingOutCardViews(Array(cardViewToAnimate))
+                addTapGestureRecognizers()
             }
         }
     }
@@ -92,6 +80,8 @@ class SetViewController: UIViewController {
     @IBAction func newGame() {
         game = SetGame()
         for _ in 1...4 { game.dealNewCards() }
+        deck.isHidden = false
+        matchedPile.isHidden = true
         
         let timeToWait: TimeInterval
         
@@ -99,28 +89,15 @@ class SetViewController: UIViewController {
             timeToWait = 0.0
         } else {
             gameTable.cardViews.forEach { animateFlyAwayForCardView($0) }
-            timeToWait = Constants.durationOfFlyingCardViewToMatchedPile + Constants.delayOfFlyingCardViewToMatchedPile
+            timeToWait = Constants.timeToWaitForMatchedCardsToFlyAway
         }
 
         Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { _ in
+            
             self.gameTable.newGame()
             self.addTapGestureRecognizers()
-            self.gameTable.cardViews.forEach {
-                self.updateCardViewFromModel($0)
-                self.animateDealingOutCardView($0)
-            }
-            
-
+            self.animateDealingOutCardViews(self.gameTable.cardViews)
         }
-        
-//        gameTable.newGame()
-        
-//        gameTable.cardViews.forEach {
-//            updateCardViewFromModel($0)
-//            animateAppearanceOfCardView($0)
-//        }
-//
-//        addTapGestureRecognizers()
     }
     
     @objc func touchCardView(_ sender: UITapGestureRecognizer) {
@@ -247,7 +224,7 @@ class SetViewController: UIViewController {
         
         cardFlyawayBehavior.addItem(tempCardView)
         
-        Timer.scheduledTimer(withTimeInterval: Constants.durationOfFlyingCardViewToMatchedPile, repeats: false) { _ in
+        Timer.scheduledTimer(withTimeInterval: Constants.timeToWaitForMatchedCardsToFlyAway, repeats: false) { _ in
             UIView.transition(
                 with: tempCardView,
                 duration: Constants.durationOfFlippingOverCardView,
@@ -262,38 +239,51 @@ class SetViewController: UIViewController {
                 completion: { _ in
                     self.cardFlyawayBehavior.removeItem(tempCardView)
                     tempCardView.removeFromSuperview()
-                    self.matchedPile.isHidden = false
+                    self.matchedPile.isHidden = self.score == 0
             }
             )
         }
     }
     
-    private func animateDealingOutCardView(_ cardViewToDeal: CardView) {
-        let originalFrame = cardViewToDeal.frame
+    private func animateDealingOutCardView(_ cardViewToAnimate: CardView) {
+        updateCardViewFromModel(cardViewToAnimate)
+        let originalFrame = cardViewToAnimate.frame
         let transform = CGAffineTransform.identity.rotated(by: -(.pi/2))
-        cardViewToDeal.transform = transform
-        cardViewToDeal.frame = stackViewForDealAndScore.convert(deck.frame, to: gameTable)
-        cardViewToDeal.alpha = 1
-        cardViewToDeal.isFaceUp = false
+        cardViewToAnimate.transform = transform
+        cardViewToAnimate.frame = stackViewForDealAndScore.convert(deck.frame, to: gameTable)
+        cardViewToAnimate.alpha = 1
+        cardViewToAnimate.isFaceUp = false
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.durationOfDealingOutCardView,
             delay: Constants.delayOfDealingOutCardView,
             options: [],
             animations: {
-                cardViewToDeal.transform = transform.rotated(by: .pi/2)
-                cardViewToDeal.frame = originalFrame
+                cardViewToAnimate.transform = transform.rotated(by: .pi/2)
+                cardViewToAnimate.frame = originalFrame
         },
             completion: { _ in
                 UIView.transition(
-                    with: cardViewToDeal,
+                    with: cardViewToAnimate,
                     duration: Constants.durationOfFlippingOverCardView,
                     options: [.transitionFlipFromLeft],
                     animations: {
-                        cardViewToDeal.isFaceUp = true
+                        cardViewToAnimate.isFaceUp = true
                 }
                 )
         }
         )
+    }
+    
+    private func animateDealingOutCardViews(_ cardViewsToAnimate: [CardView]) {
+        var tempCardViews = cardViewsToAnimate
+        animateDealingOutCardView(tempCardViews.removeFirst())
+        Timer.scheduledTimer(withTimeInterval: Constants.timeToWaitBetweenDealingOutCards, repeats: true) { timer in
+            if self.game.deckCount == 0, tempCardViews.count == 1 {
+                self.deck.isHidden = true
+            }
+            self.animateDealingOutCardView(tempCardViews.removeFirst())
+            if tempCardViews.count == 0 { timer.invalidate() }
+        }
     }
 }
 
@@ -307,5 +297,7 @@ extension SetViewController {
         static let delayOfDealingOutCardView = 0.0
  
         static let durationOfFlippingOverCardView = 0.7
+        
+        static let timeToWaitBetweenDealingOutCards = 0.2
     }
 }
