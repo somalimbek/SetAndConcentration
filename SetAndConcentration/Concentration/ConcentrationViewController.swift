@@ -11,14 +11,25 @@ import UIKit
 class ConcentrationViewController: UIViewController {
     
     var game: ConcentrationGame! {
+        didSet { updateViewFromModel() }
+    }
+    
+    let defaultTheme = ConcentrationTheme(name: "Halloween", emojies: "🦇😱🙀😈🎃👻🍭🍬🍎", backgroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), cardBackColor: #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1), textColor: #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1))
+
+    
+    var theme: ConcentrationTheme? {
         didSet {
-            updateViewFromModel()
+            if theme != oldValue, let theme = theme {
+                emojiChoices = theme.emojies
+                emoji = [:]
+                newGame(self)
+                updateViewFromModel()
+            }
         }
     }
     
-    var themeNumber = 0
-    var emojiChoices = [String]()
-    var emoji = [Int:String]()
+    var emojiChoices = "🦇😱🙀😈🎃👻🍭🍬🍎"
+    var emoji = [Int: String]()
     
     var numberOfPairsOfCards: Int {
         return (cardButtons.count + 1) / 2
@@ -33,74 +44,89 @@ class ConcentrationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        newGame()
+        newGame(self)
     }
     
     // MARK: Handle New Game Touch Behavior
     
-    @IBAction func newGame() {
-        themeNumber = themes.count.arc4random
-        
-        view.backgroundColor = themes[themeNumber].backgroundColor
+    @IBAction func newGame(_ sender: Any) {
+        let currentTheme = theme ?? defaultTheme
+        view.backgroundColor = currentTheme.backgroundColor
         for button in cardButtons {
-            button.backgroundColor = themes[themeNumber].cardBackColor
+            button.backgroundColor = currentTheme.cardBackColor
         }
         
-        themeLabel.textColor = themes[themeNumber].textColor
-        scoreLabel.textColor = themes[themeNumber].textColor
-        flipCountLabel.textColor = themes[themeNumber].textColor
-        newGameButton.setTitleColor(themes[themeNumber].textColor, for: UIControl.State.normal)
-        
-        themeLabel.text = "Theme: \(themes[themeNumber].name)"
-        
+        themeLabel.textColor = currentTheme.textColor
+        scoreLabel.textColor = currentTheme.textColor
+        flipCountLabel.textColor = currentTheme.textColor
+        newGameButton.setTitleColor(currentTheme.textColor, for: UIControl.State.normal)
+
         emoji.removeAll()
-        emojiChoices = themes[themeNumber].emojies
-        game = ConcentrationGame(numberOfPairsOfCards: numberOfPairsOfCards)
+        emojiChoices = currentTheme.emojies
+        
+        themeLabel.text = "Theme: \(currentTheme.name)"
+
+        if sender is UIViewController {
+            if game == nil {
+                game = ConcentrationGame(numberOfPairsOfCards: numberOfPairsOfCards)
+            }
+        } else if sender is UIButton {
+            game = ConcentrationGame(numberOfPairsOfCards: numberOfPairsOfCards)
+        }
     }
     
     // MARK: Handle Card Touch Behavior
     
     @IBAction func touchCard(_ sender: UIButton) {
         if let cardNumber = cardButtons.firstIndex(of: sender) {
-            game.chooseCard(at: cardNumber)
-            updateViewFromModel()
+            if let game = game {
+                game.chooseCard(at: cardNumber)
+                updateViewFromModel()
+            } else {
+                game = ConcentrationGame(numberOfPairsOfCards: numberOfPairsOfCards)
+                game.chooseCard(at: cardNumber)
+                updateViewFromModel()
+            }
         } else {
             print("chosen card was not in cardButtons")
         }
     }
     
     func updateViewFromModel() {
-        for index in cardButtons.indices {
-            let button = cardButtons[index]
-            let card = game.cards[index]
-            if card.isFaceUp {
-                button.setTitle(emoji(for: card), for: UIControl.State.normal)
-                button.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-            } else {
-                button.setTitle("", for: UIControl.State.normal)
-                button.backgroundColor = card.isMatched ?  #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 0) : themes[themeNumber].cardBackColor
+        if cardButtons != nil {
+            for index in cardButtons.indices {
+                let button = cardButtons[index]
+                let card = game.cards[index]
+                if card.isFaceUp {
+                    button.setTitle(emoji(for: card), for: UIControl.State.normal)
+                    button.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+                } else {
+                    button.setTitle("", for: UIControl.State.normal)
+                    button.backgroundColor = card.isMatched ?  #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 0) : theme?.cardBackColor ?? defaultTheme.cardBackColor
+                }
             }
         }
-        flipCountLabel.text = "Flips: \(game.flipCount)"
-        scoreLabel.text = "Score: \(game.score)"
+        if flipCountLabel != nil, scoreLabel != nil {
+            flipCountLabel.text = "Flips: \(game.flipCount)"
+            scoreLabel.text = "Score: \(game.score)"
+        }
     }
     
     func emoji(for card: ConcentrationCard) -> String {
         if emoji[card.identifier] == nil, emojiChoices.count > 0 {
-            emoji[card.identifier] = emojiChoices.remove(at: emojiChoices.count.arc4random)
+            let stringIndex = emojiChoices.index(emojiChoices.startIndex, offsetBy: emojiChoices.count.arc4random)
+            emoji[card.identifier] = String(emojiChoices.remove(at: stringIndex))
         }
         return emoji[card.identifier] ?? "?"
     }
-    
-    let themes = [
-        ConcentrationTheme(name: "Halloween", emojies: ["🦇","😱","🙀","😈","🎃","👻","🍭","🍬","🍎"], backgroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), cardBackColor: #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1), textColor: #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)),
-        ConcentrationTheme(name: "Animals", emojies: ["🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐨"], backgroundColor: #colorLiteral(red: 0.6679978967, green: 0.4751212597, blue: 0.2586010993, alpha: 1), cardBackColor: #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1), textColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)),
-        ConcentrationTheme(name: "Fruits", emojies: ["🍏","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓"], backgroundColor: #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1), cardBackColor: #colorLiteral(red: 0.9994240403, green: 0.9855536819, blue: 0, alpha: 1), textColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)),
-        ConcentrationTheme(name: "Sports", emojies: ["⚽️","🏀","🏈","⚾️","🥎","🎾","🏐","🥏","🎱"], backgroundColor: #colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1), cardBackColor: #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1), textColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)),
-        ConcentrationTheme(name: "Faces", emojies: ["😀","😅","😊","🤩","🤪","🤓","🥳","🤯","🤠"], backgroundColor: #colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1), cardBackColor: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1), textColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)),
-        ConcentrationTheme(name: "People", emojies: ["👮‍♀️","👩‍🍳","👩‍🏫","👷‍♂️","👨‍🚒","💂‍♂️","🕵️‍♂️","👩‍⚕️","👩‍🚀"], backgroundColor: #colorLiteral(red: 0.9764705896, green: 0.850980401, blue: 0.5490196347, alpha: 1), cardBackColor: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1), textColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)),
-    ]
-    
+}
+
+struct ConcentrationTheme: Equatable {
+    let name: String
+    let emojies: String
+    let backgroundColor: UIColor
+    let cardBackColor: UIColor
+    let textColor: UIColor
 }
 
 extension Int {

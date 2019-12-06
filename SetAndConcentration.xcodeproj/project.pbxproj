@@ -10,7 +10,7 @@
 		166440732399867D000BECE2 /* ConcentrationGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1664406F2399867D000BECE2 /* ConcentrationGame.swift */; };
 		166440742399867D000BECE2 /* ConcentrationCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166440702399867D000BECE2 /* ConcentrationCard.swift */; };
 		166440752399867D000BECE2 /* ConcentrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166440712399867D000BECE2 /* ConcentrationViewController.swift */; };
-		166440762399867D000BECE2 /* ConcentrationTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166440722399867D000BECE2 /* ConcentrationTheme.swift */; };
+		16644078239ABA3E000BECE2 /* ConcentrationThemeChooserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16644077239ABA3E000BECE2 /* ConcentrationThemeChooserViewController.swift */; };
 		169CB24A2397C427008B6838 /* SetCardFlyawayBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169CB2492397C427008B6838 /* SetCardFlyawayBehavior.swift */; };
 		16C62B00238D70130009DB24 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C62AFF238D70130009DB24 /* AppDelegate.swift */; };
 		16C62B02238D70130009DB24 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C62B01238D70130009DB24 /* SceneDelegate.swift */; };
@@ -29,7 +29,7 @@
 		1664406F2399867D000BECE2 /* ConcentrationGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcentrationGame.swift; sourceTree = "<group>"; };
 		166440702399867D000BECE2 /* ConcentrationCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcentrationCard.swift; sourceTree = "<group>"; };
 		166440712399867D000BECE2 /* ConcentrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcentrationViewController.swift; sourceTree = "<group>"; };
-		166440722399867D000BECE2 /* ConcentrationTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcentrationTheme.swift; sourceTree = "<group>"; };
+		16644077239ABA3E000BECE2 /* ConcentrationThemeChooserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConcentrationThemeChooserViewController.swift; path = SetAndConcentration/ConcentrationThemeChooserViewController.swift; sourceTree = SOURCE_ROOT; };
 		169CB2492397C427008B6838 /* SetCardFlyawayBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCardFlyawayBehavior.swift; sourceTree = "<group>"; };
 		16C62AFC238D70130009DB24 /* 2 in 1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "2 in 1.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		16C62AFF238D70130009DB24 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -76,8 +76,8 @@
 			children = (
 				166440702399867D000BECE2 /* ConcentrationCard.swift */,
 				1664406F2399867D000BECE2 /* ConcentrationGame.swift */,
-				166440722399867D000BECE2 /* ConcentrationTheme.swift */,
 				166440712399867D000BECE2 /* ConcentrationViewController.swift */,
+				16644077239ABA3E000BECE2 /* ConcentrationThemeChooserViewController.swift */,
 			);
 			path = Concentration;
 			sourceTree = "<group>";
@@ -196,6 +196,7 @@
 				16C62B00238D70130009DB24 /* AppDelegate.swift in Sources */,
 				166440742399867D000BECE2 /* ConcentrationCard.swift in Sources */,
 				169CB24A2397C427008B6838 /* SetCardFlyawayBehavior.swift in Sources */,
+				16644078239ABA3E000BECE2 /* ConcentrationThemeChooserViewController.swift in Sources */,
 				16C62B02238D70130009DB24 /* SceneDelegate.swift in Sources */,
 				16C62B1B238D838C0009DB24 /* SetGameTableView.swift in Sources */,
 				166440752399867D000BECE2 /* ConcentrationViewController.swift in Sources */,
@@ -204,7 +205,6 @@
 				166440732399867D000BECE2 /* ConcentrationGame.swift in Sources */,
 				16C62B1C238D838C0009DB24 /* SetCardView.swift in Sources */,
 				16C62B1F238D838C0009DB24 /* SetCard.swift in Sources */,
-				166440762399867D000BECE2 /* ConcentrationTheme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
