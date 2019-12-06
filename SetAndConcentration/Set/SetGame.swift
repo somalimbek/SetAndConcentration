@@ -9,8 +9,8 @@
 import Foundation
 
 struct SetGame {
-    private var deck = Array(calling: { Card() }, count: 81).shuffled()
-    var cardsOnTable = [Card]()
+    private var deck = Array(calling: { SetCard() }, count: 81).shuffled()
+    var cardsOnTable = [SetCard]()
     var selectedCardsIndices = [Int]()
     var matchedCardsIndices = [Int]()
     
@@ -28,10 +28,10 @@ struct SetGame {
             let secondCard = cardsOnTable[selectedCardsIndices[1]]
             let thirdCard = cardsOnTable[selectedCardsIndices[2]]
             
-            var isMatch = Card.NumberOfShapes.allEqual(firstCard.numberOfShapes, secondCard.numberOfShapes, thirdCard.numberOfShapes) || Card.NumberOfShapes.allUnequal(firstCard.numberOfShapes, secondCard.numberOfShapes, thirdCard.numberOfShapes)
-            isMatch = isMatch && (Card.Shape.allEqual(firstCard.shape, secondCard.shape, thirdCard.shape) || Card.Shape.allUnequal(firstCard.shape, secondCard.shape, thirdCard.shape))
-            isMatch = isMatch && (Card.Shading.allEqual(firstCard.shading, secondCard.shading, thirdCard.shading) || Card.Shading.allUnequal(firstCard.shading, secondCard.shading, thirdCard.shading))
-            isMatch = isMatch && (Card.Color.allEqual(firstCard.color, secondCard.color, thirdCard.color) || Card.Color.allUnequal(firstCard.color, secondCard.color, thirdCard.color))
+            var isMatch = SetCard.NumberOfShapes.allEqual(firstCard.numberOfShapes, secondCard.numberOfShapes, thirdCard.numberOfShapes) || SetCard.NumberOfShapes.allUnequal(firstCard.numberOfShapes, secondCard.numberOfShapes, thirdCard.numberOfShapes)
+            isMatch = isMatch && (SetCard.Shape.allEqual(firstCard.shape, secondCard.shape, thirdCard.shape) || SetCard.Shape.allUnequal(firstCard.shape, secondCard.shape, thirdCard.shape))
+            isMatch = isMatch && (SetCard.Shading.allEqual(firstCard.shading, secondCard.shading, thirdCard.shading) || SetCard.Shading.allUnequal(firstCard.shading, secondCard.shading, thirdCard.shading))
+            isMatch = isMatch && (SetCard.Color.allEqual(firstCard.color, secondCard.color, thirdCard.color) || SetCard.Color.allUnequal(firstCard.color, secondCard.color, thirdCard.color))
             
             return isMatch
         }
@@ -92,7 +92,7 @@ struct SetGame {
     }
     
     mutating func reShuffleCardsOnTable() {
-        var selectedCards = [Card]()
+        var selectedCards = [SetCard]()
         for index in selectedCardsIndices {
             selectedCards.append(cardsOnTable[index])
         }

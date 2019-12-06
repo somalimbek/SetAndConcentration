@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CardFlyawayBehavior: UIDynamicBehavior {
+class SetCardFlyawayBehavior: UIDynamicBehavior {
     
     var snap: UISnapBehavior?
     let pointToSnapTo: CGPoint
@@ -72,7 +72,7 @@ class CardFlyawayBehavior: UIDynamicBehavior {
     }
 }
 
-extension CardFlyawayBehavior {
+extension SetCardFlyawayBehavior {
     struct Constants {
         static let pushMagnitude = CGFloat(5.0).arc4random + 20.0
         static let snapDamping = CGFloat(0.7)

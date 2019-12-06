@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GameTableView: UIView {
+class SetGameTableView: UIView {
     
     override var bounds: CGRect {
         didSet { grid.frame = self.bounds }
@@ -24,7 +24,7 @@ class GameTableView: UIView {
         }
     }
     
-    var cardViews = [CardView]()
+    var cardViews = [SetCardView]()
     var isCreatingNewGame = false
     
     func addCardView() { addCardViews(count: 1) }
@@ -42,7 +42,7 @@ class GameTableView: UIView {
         
         for _ in 1...numberOfCardViewsToAdd {
             if let frame = grid[cardViews.count] {
-                let newCard = CardView(frame: frame)
+                let newCard = SetCardView(frame: frame)
                 newCard.alpha = 0
                 cardViews.append(newCard)
                 addSubview(newCard)
@@ -50,7 +50,7 @@ class GameTableView: UIView {
         }
     }
     
-    func removeCardView(_ cardViewToRemove: CardView) {
+    func removeCardView(_ cardViewToRemove: SetCardView) {
         cardViewToRemove.removeFromSuperview()
         cardViews.removeAll { $0 === cardViewToRemove }
         grid.cellCount = cardViews.count
@@ -106,7 +106,7 @@ class GameTableView: UIView {
     }
 }
 
-extension GameTableView {
+extension SetGameTableView {
     struct Constants {
         static let durationOfUpdatingCardFrames = 0.3
         static let delayOfUpdatingCardFrames = 0.0

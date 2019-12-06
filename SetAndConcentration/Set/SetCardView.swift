@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CardView: UIView {
+class SetCardView: UIView {
     
     var numberOfShapes: NumberOfShapes = .one { didSet {  if numberOfShapes != oldValue { setNeedsDisplay(); setNeedsLayout() } } }
     var shape: Shape = .diamond { didSet {  setNeedsDisplay() } }
@@ -60,7 +60,7 @@ class CardView: UIView {
         isOpaque = false
     }
     
-    convenience init(copyFrom other: CardView) {
+    convenience init(copyFrom other: SetCardView) {
         self.init(frame: other.frame)
         numberOfShapes = other.numberOfShapes
         shape = other.shape

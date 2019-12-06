@@ -8,14 +8,14 @@
 
 import Foundation
 
-struct Card: Equatable {
+struct SetCard: Equatable {
     let numberOfShapes: NumberOfShapes
     let shape: Shape
     let shading: Shading
     let color: Color
     
     init() {
-        let identifier = Card.makeUniqueIdentifier()
+        let identifier = SetCard.makeUniqueIdentifier()
         numberOfShapes = NumberOfShapes(rawValue: (identifier % 3) + 1)!
         shape = Shape(rawValue: (identifier / 3) % 3)!
         shading = Shading(rawValue: (identifier / 9) % 3)!

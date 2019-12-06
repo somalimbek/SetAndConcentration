@@ -36,16 +36,16 @@ class SetViewController: UIViewController {
         return stackViewForDealAndScore.convert(matchedPile.center, to: view)
     }
     
-    lazy var cardFlyawayBehavior = CardFlyawayBehavior(in: self.animator, pointToFlyTo: self.matchedPileCenterConvertedToView)
+    lazy var cardFlyawayBehavior = SetCardFlyawayBehavior(in: self.animator, pointToFlyTo: self.matchedPileCenterConvertedToView)
     
-    var deck = CardView()
-    var matchedPile = CardView()
+    var deck = SetCardView()
+    var matchedPile = SetCardView()
     
     @IBOutlet weak var stackViewForDealAndScore: UIStackView!
     @IBOutlet weak var dealButton: UIButton!
     @IBOutlet weak var scoreLabel: UILabel!
     
-    @IBOutlet weak var gameTable: GameTableView! {
+    @IBOutlet weak var gameTable: SetGameTableView! {
         didSet {
             let swipe = UISwipeGestureRecognizer(target: self, action: #selector(dealThreeMoreCards))
             swipe.direction = [.down]
@@ -63,7 +63,7 @@ class SetViewController: UIViewController {
     @objc @IBAction func dealThreeMoreCards() {
         if game.deckCount >= 3 {
             if game.areSelectedCardsAMatch {
-                var cardViewsToAnimate = [CardView]()
+                var cardViewsToAnimate = [SetCardView]()
                 game.selectedCardsIndices.forEach { cardViewsToAnimate.append(gameTable.cardViews[$0]) }
                 game.dealNewCards()
                 animateDealingOutCardViews(cardViewsToAnimate)
@@ -103,13 +103,13 @@ class SetViewController: UIViewController {
     @objc func touchCardView(_ sender: UITapGestureRecognizer) {
         switch sender.state {
         case .ended:
-            if let touchedCardView = sender.view as? CardView {
+            if let touchedCardView = sender.view as? SetCardView {
                 if let index = gameTable.cardViews.firstIndex(of: touchedCardView) {
                     game.selectCard(at: index)
                     
                     if game.areSelectedCardsAMatch {
                         let selectedCardsIndices = game.selectedCardsIndices
-                        var cardViewsToAnimate = [CardView]()
+                        var cardViewsToAnimate = [SetCardView]()
                         selectedCardsIndices.forEach { cardViewsToAnimate.append(gameTable.cardViews[$0]) }
                         
                         cardViewsToAnimate.forEach { animateFlyAwayForCardView($0) }
@@ -173,27 +173,27 @@ class SetViewController: UIViewController {
         }
     }
     
-    private func updateCardViewFromModel(_ cardViewToUpdate: CardView) {
+    private func updateCardViewFromModel(_ cardViewToUpdate: SetCardView) {
         if let index = gameTable.cardViews.firstIndex(of: cardViewToUpdate) {
-            if let numberOfShapes = CardView.NumberOfShapes(rawValue: game.cardsOnTable[index].numberOfShapes.rawValue) {
+            if let numberOfShapes = SetCardView.NumberOfShapes(rawValue: game.cardsOnTable[index].numberOfShapes.rawValue) {
                 cardViewToUpdate.numberOfShapes = numberOfShapes
             } else {
                 fatalError("SetViewController.updateCardViewFromModel(_:): could not set numberOfShapes property of card at: \(index).")
             }
             
-            if let shape = CardView.Shape(rawValue: game.cardsOnTable[index].shape.rawValue) {
+            if let shape = SetCardView.Shape(rawValue: game.cardsOnTable[index].shape.rawValue) {
                 cardViewToUpdate.shape = shape
             } else {
                 fatalError("SetViewController.updateCardViewFromModel(_:): could not set shape property of card at: \(index).")
             }
             
-            if let shading = CardView.Shading(rawValue: game.cardsOnTable[index].shading.rawValue) {
+            if let shading = SetCardView.Shading(rawValue: game.cardsOnTable[index].shading.rawValue) {
                 cardViewToUpdate.shading = shading
             } else {
                 fatalError("SetViewController.updateCardViewFromModel(_:): Could not set shading property of card at: \(index).")
             }
             
-            if let color = CardView.Color(rawValue: game.cardsOnTable[index].color.rawValue) {
+            if let color = SetCardView.Color(rawValue: game.cardsOnTable[index].color.rawValue) {
                 cardViewToUpdate.color = color
             } else {
                 fatalError("SetViewController.updateCardViewFromModel(_:): Could not set color property of card at: \(index).")
@@ -218,8 +218,8 @@ class SetViewController: UIViewController {
         matchedPile.isHidden = true
     }
     
-    private func animateFlyAwayForCardView(_ cardViewToFlyAway: CardView) {
-        let tempCardView = CardView(copyFrom: cardViewToFlyAway)
+    private func animateFlyAwayForCardView(_ cardViewToFlyAway: SetCardView) {
+        let tempCardView = SetCardView(copyFrom: cardViewToFlyAway)
         gameTable.addSubview(tempCardView)
         cardViewToFlyAway.alpha = 0
         
@@ -246,7 +246,7 @@ class SetViewController: UIViewController {
         }
     }
     
-    private func animateDealingOutCardView(_ cardViewToAnimate: CardView) {
+    private func animateDealingOutCardView(_ cardViewToAnimate: SetCardView) {
         updateCardViewFromModel(cardViewToAnimate)
         let originalFrame = cardViewToAnimate.frame
         let transform = CGAffineTransform.identity.rotated(by: -(.pi/2))
@@ -275,7 +275,7 @@ class SetViewController: UIViewController {
         )
     }
     
-    private func animateDealingOutCardViews(_ cardViewsToAnimate: [CardView]) {
+    private func animateDealingOutCardViews(_ cardViewsToAnimate: [SetCardView]) {
         var tempCardViews = cardViewsToAnimate
         animateDealingOutCardView(tempCardViews.removeFirst())
         Timer.scheduledTimer(withTimeInterval: Constants.timeToWaitBetweenDealingOutCards, repeats: true) { timer in
@@ -290,7 +290,7 @@ class SetViewController: UIViewController {
 
 extension SetViewController {
     struct Constants {
-        static let durationOfFlyingCardViewToMatchedPile = CardFlyawayBehavior.Constants.timeToWaitForMatchedCardsToFlyAround + 1.5
+        static let durationOfFlyingCardViewToMatchedPile = SetCardFlyawayBehavior.Constants.timeToWaitForMatchedCardsToFlyAround + 1.5
         static let delayOfFlyingCardViewToMatchedPile = 0.0
         static let timeToWaitForMatchedCardsToFlyAway = durationOfFlyingCardViewToMatchedPile + delayOfFlyingCardViewToMatchedPile
 
